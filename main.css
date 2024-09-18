@@ -51,6 +51,9 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  box-shadow: 7px 43px 91px -27px rgba(0, 0, 0, 0.16);
+  -webkit-box-shadow: 7px 43px 91px -27px rgba(0, 0, 0, 0.16);
+  -moz-box-shadow: 7px 43px 91px -27px rgba(0, 0, 0, 0.16);
 }
 
 .form-inputs-container {
