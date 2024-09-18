@@ -22,126 +22,123 @@
   <body>
     <h1 class="title">Spli<br />tter</h1>
     <form id="form" novalidate>
-      <div class="form-label-container bill-label-container">
-        <div class="form-labels">
-          <label class="form-label bill-label" for="bill-input">Bill</label>
-          <span id="bill-error-label" class="form-error-label hidden"></span>
-        </div>
-        <input
-          class="form-input"
-          type="text"
-          name="bill"
-          id="bill-input"
-          placeholder="0"
-        />
-      </div>
-      <div class="form-label-container tips-options-container">
-        <div class="form-labels">
-          <label for="tip" class="form-label tips-options-label"
-          >Select Tip %</label
-        >
-          <span id="tip-error-label" class="form-error-label hidden"></span>
-        </div>
-        <div class="tips-options-list">
-          <label class="tip-option" for="option-1">
-            5%
-            <input
-              class="radio-button"
-              type="radio"
-              id="option-1"
-              name="tip"
-              value="5"
-            />
-          </label>
-          <label class="tip-option" for="option-2">
-            10%
-            <input
-              class="radio-button"
-              type="radio"
-              id="option-2"
-              name="tip"
-              value="10"
-            />
-          </label>
-          <label class="tip-option" for="option-3">
-            15%
-            <input
-              class="radio-button"
-              type="radio"
-              id="option-3"
-              name="tip"
-              value="15"
-              checked
-            />
-          </label>
-          <label class="tip-option" for="option-4">
-            20%
-            <input
-              class="radio-button"
-              type="radio"
-              id="option-4"
-              name="tip"
-              value="20"
-            />
-          </label>
-          <label class="tip-option" for="option-5">
-            25%
-            <input
-              class="radio-button"
-              type="radio"
-              id="option-5"
-              name="tip"
-              value="25"
-            />
-          </label>
-          <label class="tip-option" for="option-6">
-            50%
-            <input
-              class="radio-button"
-              type="radio"
-              id="option-6"
-              name="tip"
-              value="50"
-            />
-          </label>
+      <div class="form-inputs-container">
+        <div class="form-label-container bill-label-container">
+          <div class="form-labels">
+            <label class="form-label bill-label" for="bill-input">Bill</label>
+            <span id="bill-error-label" class="form-error-label hidden"></span>
+          </div>
           <input
-            id="custom-tip-option"
-            class="tip-option custom"
-            placeholder="Custom"
+            class="form-input"
+            type="text"
+            name="bill"
+            id="bill-input"
+            placeholder="0"
+          />
+        </div>
+        <div class="form-label-container tips-options-container">
+          <div class="form-labels">
+            <label for="option-1" class="form-label tips-options-label"
+              >Select Tip %</label
+            >
+            <span id="tip-error-label" class="form-error-label hidden"></span>
+          </div>
+          <div class="tips-options-list">
+            <label class="tip-option" for="option-1">
+              5%
+              <input
+                class="radio-button"
+                type="radio"
+                id="option-1"
+                name="tip"
+                value="5"
+              />
+            </label>
+            <label class="tip-option" for="option-2">
+              10%
+              <input
+                class="radio-button"
+                type="radio"
+                id="option-2"
+                name="tip"
+                value="10"
+              />
+            </label>
+            <label class="tip-option" for="option-3">
+              15%
+              <input
+                class="radio-button"
+                type="radio"
+                id="option-3"
+                name="tip"
+                value="15"
+                checked
+              />
+            </label>
+            <label class="tip-option" for="option-5">
+              25%
+              <input
+                class="radio-button"
+                type="radio"
+                id="option-5"
+                name="tip"
+                value="25"
+              />
+            </label>
+            <label class="tip-option" for="option-6">
+              50%
+              <input
+                class="radio-button"
+                type="radio"
+                id="option-6"
+                name="tip"
+                value="50"
+              />
+            </label>
+            <input
+              id="custom-tip-option"
+              class="tip-option custom"
+              placeholder="Custom"
+            />
+          </div>
+        </div>
+        <div class="form-label-container people-label-container">
+          <div class="form-labels">
+            <label class="form-label people-label" for="people-input"
+              >Number of People</label
+            >
+            <span
+              id="people-error-label"
+              class="form-error-label hidden"
+            ></span>
+          </div>
+          <input
+            class="form-input"
+            type="text"
+            name="people"
+            id="people-input"
+            placeholder="0"
           />
         </div>
       </div>
-      <div class="form-label-container people-label-container">
-        <div class="form-labels">
-          <label class="form-label people-label" for="people-input"
-            >Number of People</label
-          >
-          <span id="people-error-label" class="form-error-label hidden"></span>
-        </div>
-        <input
-          class="form-input"
-          type="text"
-          name="people"
-          id="people-input"
-          placeholder="0"
-        />
-      </div>
       <div class="results-container">
-        <div class="results-label-contanier">
-          <h2 class="result-label">
-            Tip amount <br />
-            <span>/ person</span>
-          </h2>
-          <p id="tip-amount-per-person" class="result-price">$0.00</p>
+        <div class="results-labels-container">
+          <div class="results-label-contanier">
+            <h2 class="result-label">
+              Tip amount <br />
+              <span>/ person</span>
+            </h2>
+            <p id="tip-amount-per-person" class="result-price">$0.00</p>
+          </div>
+          <div class="results-label-contanier">
+            <h2 class="result-label">
+              Total <br />
+              <span>/ person</span>
+            </h2>
+            <p id="total-tip-per-person" class="result-price">$0.00</p>
+          </div>
         </div>
-        <div class="results-label-contanier">
-          <h2 class="result-label">
-            Total <br />
-            <span>/ person</span>
-          </h2>
-          <p id="total-tip-per-person" class="result-price">$0.00</p>
-        </div>
-        <button type="button" id="reset-button">Reset</button>
+        <button type="button" id="reset-button" disabled>Reset</button>
       </div>
     </form>
     <script src="main.js"></script>
