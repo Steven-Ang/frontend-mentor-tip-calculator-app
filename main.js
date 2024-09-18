@@ -71,6 +71,10 @@ const removeError = (label, input) => {
   label.innerText = "";
 };
 
+const enableResetButton = () => resetButton.removeAttribute("disabled");
+
+const disableResetButton = () => resetButton.setAttribute("disabled", true);
+
 const isInputEmpty = (value) => value === "" || value === "0";
 const isInputEndsWithDot = (value) => value.endsWith(".");
 
@@ -85,6 +89,7 @@ const handleReset = (event, submitForm) => {
   updateTipLabel("tip-amount-per-person", "0.00");
   updateTipLabel("total-tip-per-person", "0.00");
 
+  disableResetButton();
   submitForm.reset();
 };
 
@@ -104,8 +109,21 @@ const handleKeydown = (event, regex, callback = null, callbackOptions = {}) => {
   if (!value.match(regex)) event.preventDefault();
 };
 
+const handleOnInput = (event, otherInput) => {
+  const inputValue = event.target.value;
+  const otherInputValue = otherInput.value;
+
+  if (inputValue !== "" && otherInputValue === "") {
+    enableResetButton();
+  } else if (inputValue === "" && otherInputValue === "") {
+    disableResetButton();
+  }
+};
+
 const handleSubmit = (event) => {
   event.preventDefault();
+
+  enableResetButton();
 
   const formData = Object.fromEntries(new FormData(event.target));
 
@@ -114,6 +132,8 @@ const handleSubmit = (event) => {
   const parsedBill = parseFloat(bill);
   const parsedTip = parseInt(tip);
   const parsedPeople = parseInt(people);
+
+  removeError(tipErrorLabel, customTipOption);
 
   if (isInputEmpty(bill) || isInputEndsWithDot(bill) || isInputEmpty(people)) {
     if (!isInputEmpty(bill) || !isInputEndsWithDot(bill))
@@ -162,6 +182,12 @@ billInput.addEventListener("keydown", (event) =>
 );
 peopleInput.addEventListener("keydown", (event) =>
   handleKeydown(event, peopleInputRegex)
+);
+billInput.addEventListener("input", (event) =>
+  handleOnInput(event, peopleInput)
+);
+peopleInput.addEventListener("input", (event) =>
+  handleOnInput(event, billInput)
 );
 customTipOption.addEventListener("keydown", (event) =>
   handleKeydown(event, customTipOptionRegex, appendCustomTip, {
