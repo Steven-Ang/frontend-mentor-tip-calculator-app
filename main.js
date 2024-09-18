@@ -3,6 +3,7 @@ const billInput = document.getElementById("bill-input");
 const peopleInput = document.getElementById("people-input");
 const billErrorLabel = document.getElementById("bill-error-label");
 const peopleErrorLabel = document.getElementById("people-error-label");
+const tipErrorLabel = document.getElementById("tip-error-label");
 const tipsOptionsList = document.querySelector(".tips-options-list");
 const tipOptions = document.querySelectorAll(".radio-button");
 const customTipOption = document.getElementById("custom-tip-option");
@@ -26,11 +27,19 @@ const calculateTotalTipPersPerson = (bill, tip, people) => {
   return roundUp(newBill / people);
 };
 
-const appendCustomTip = (list, element, tipAmount) => {
-  const label = document.createElement("label");
-  label.classList.add("tip-option");
+const appendCustomTip = (label, list, element, tipAmount) => {
+  removeError(label, element);
 
-  label.innerHTML = `
+  if (isInputEmpty(tipAmount)) {
+    const errorMessage = "Can't be zero";
+    addError(label, element, errorMessage);
+    return;
+  }
+
+  const tipLabel = document.createElement("label");
+  tipLabel.classList.add("tip-option");
+
+  tipLabel.innerHTML = `
     ${tipAmount}%
     <input
       class="radio-button"
@@ -41,7 +50,7 @@ const appendCustomTip = (list, element, tipAmount) => {
     />
   `;
 
-  list.insertBefore(label, element);
+  list.insertBefore(tipLabel, element);
   element.value = "";
 };
 
@@ -62,14 +71,37 @@ const removeError = (label, input) => {
   label.innerText = "";
 };
 
-const isInvalidInput = (value) => value === "" || value === "0";
+const isInputEmpty = (value) => value === "" || value === "0";
+const isInputEndsWithDot = (value) => value.endsWith(".");
 
-const handleCustomTipOptionOnMouseEnter = (event) => {
-  if (event.key === "Enter") {
+const requestSubmit = (event) => {
+  event.preventDefault();
+  event.target.form.requestSubmit();
+};
+
+const handleReset = (event, submitForm) => {
+  event.preventDefault();
+
+  updateTipLabel("tip-amount-per-person", "0.00");
+  updateTipLabel("total-tip-per-person", "0.00");
+
+  submitForm.reset();
+};
+
+const handleKeydown = (event, regex, callback = null, callbackOptions = {}) => {
+  const value = event.target.value + event.key;
+
+  if (event.key === "Enter" && event.target.value !== "") {
     event.preventDefault();
-
-    appendCustomTip(tipsOptionsList, customTipOption, event.target.value);
+    if (callback === null) requestSubmit(event);
+    else if (callback) {
+      const { label, list, element } = callbackOptions;
+      callback(label, list, element, event.target.value);
+    }
   }
+
+  if (event.key === "Backspace") return;
+  if (!value.match(regex)) event.preventDefault();
 };
 
 const handleSubmit = (event) => {
@@ -83,17 +115,26 @@ const handleSubmit = (event) => {
   const parsedTip = parseInt(tip);
   const parsedPeople = parseInt(people);
 
-  console.log(isInvalidInput(bill), isInvalidInput(people));
+  if (isInputEmpty(bill) || isInputEndsWithDot(bill) || isInputEmpty(people)) {
+    if (!isInputEmpty(bill) || !isInputEndsWithDot(bill))
+      removeError(billErrorLabel, billInput);
+    if (!isInputEmpty(people)) removeError(peopleErrorLabel, peopleInput);
 
-  if (isInvalidInput(bill) || isInvalidInput(people)) {
-    if (!isInvalidInput(bill)) removeError(billErrorLabel, billInput);
-    if (!isInvalidInput(people)) removeError(peopleErrorLabel, peopleInput);
+    let billErrorMessage = "";
+    let peopleErrorMessage = "";
 
-    const errorMessage = "Can't be zero";
-
-    if (isInvalidInput(bill)) addError(billErrorLabel, billInput, errorMessage);
-    if (isInvalidInput(people))
-      addError(peopleErrorLabel, peopleInput, errorMessage);
+    if (isInputEmpty(bill)) {
+      billErrorMessage = "Can't be zero";
+      addError(billErrorLabel, billInput, billErrorMessage);
+    }
+    if (isInputEndsWithDot(bill)) {
+      billErrorMessage = "Can't end with .";
+      addError(billErrorLabel, billInput, billErrorMessage);
+    }
+    if (isInputEmpty(people)) {
+      peopleErrorMessage = "Can't be zero";
+      addError(peopleErrorLabel, peopleInput, peopleErrorMessage);
+    }
 
     return;
   }
@@ -111,20 +152,22 @@ const handleSubmit = (event) => {
   );
 };
 
-const handleKeydown = (event) => {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    event.target.form.requestSubmit();
-  }
-};
+const billInputRegex = /^(0|[1-9]\d*)(\.\d{0,2})?$/;
+const peopleInputRegex = /^(0|[1-9]\d*)$/;
+const customTipOptionRegex = /^(0|100|[1-9][0-9]?)$/;
 
-const handleReset = (event, submitForm) => {
-  event.preventDefault();
-  submitForm.reset();
-};
-
-billInput.addEventListener("keydown", handleKeydown);
-peopleInput.addEventListener("keydown", handleKeydown);
 form.addEventListener("submit", handleSubmit);
-customTipOption.addEventListener("keydown", handleCustomTipOptionOnMouseEnter);
+billInput.addEventListener("keydown", (event) =>
+  handleKeydown(event, billInputRegex)
+);
+peopleInput.addEventListener("keydown", (event) =>
+  handleKeydown(event, peopleInputRegex)
+);
+customTipOption.addEventListener("keydown", (event) =>
+  handleKeydown(event, customTipOptionRegex, appendCustomTip, {
+    label: tipErrorLabel,
+    list: tipsOptionsList,
+    element: customTipOption,
+  })
+);
 resetButton.addEventListener("click", (event) => handleReset(event, form));

@@ -25,23 +25,23 @@
       <div class="form-label-container bill-label-container">
         <div class="form-labels">
           <label class="form-label bill-label" for="bill-input">Bill</label>
-          <span id="bill-error-label" class="form-error-label hidden"
-            ></span
-          >
+          <span id="bill-error-label" class="form-error-label hidden"></span>
         </div>
         <input
           class="form-input"
           type="text"
-          pattern="[0-9]*\.[0-9]+"
           name="bill"
           id="bill-input"
           placeholder="0"
         />
       </div>
       <div class="form-label-container tips-options-container">
-        <label for="tip" class="form-label tips-options-label"
+        <div class="form-labels">
+          <label for="tip" class="form-label tips-options-label"
           >Select Tip %</label
         >
+          <span id="tip-error-label" class="form-error-label hidden"></span>
+        </div>
         <div class="tips-options-list">
           <label class="tip-option" for="option-1">
             5%
@@ -104,7 +104,11 @@
               value="50"
             />
           </label>
-          <input id="custom-tip-option" class="tip-option custom" placeholder="Custom" />
+          <input
+            id="custom-tip-option"
+            class="tip-option custom"
+            placeholder="Custom"
+          />
         </div>
       </div>
       <div class="form-label-container people-label-container">
@@ -112,13 +116,11 @@
           <label class="form-label people-label" for="people-input"
             >Number of People</label
           >
-          <span id="people-error-label" class="form-error-label hidden"
-            ></span
-          >
+          <span id="people-error-label" class="form-error-label hidden"></span>
         </div>
         <input
           class="form-input"
-          type="number"
+          type="text"
           name="people"
           id="people-input"
           placeholder="0"

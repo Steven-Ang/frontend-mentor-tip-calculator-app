@@ -150,6 +150,10 @@ input::-webkit-inner-spin-button {
   text-align: center;
 }
 
+.tip-option.custom.error {
+  border: var(--form-input-error-border);
+}
+
 .radio-button {
   display: none;
 }
