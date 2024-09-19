@@ -17,6 +17,10 @@
   --form-input-error-border: 2px solid tomato;
 }
 
+html, body {
+  height: 100%;
+}
+
 html {
   font-size: var(--main-font-size);
 }
@@ -24,8 +28,6 @@ html {
 body {
   font-family: var(--main-font-family);
   background-color: var(--neutral-4);
-  width: 100%;
-  min-height: 100vh;
 }
 
 input::-webkit-outer-spin-button,
@@ -34,12 +36,21 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  gap: 2rem;
+}
+
 .title {
   text-transform: uppercase;
   letter-spacing: 0.6rem;
   color: var(--neutral-1);
   text-align: center;
-  margin: 3rem 0;
+  margin: 3rem;
   font-size: 1.6rem;
 }
 
@@ -236,7 +247,7 @@ input::-webkit-inner-spin-button {
   }
 
   .title {
-    margin: 0.6rem;
+    margin: 0;
   }
 
   #form {
@@ -247,6 +258,7 @@ input::-webkit-inner-spin-button {
     margin: auto 0;
     padding: 2rem;
     border-radius: 1.2rem;
+    max-width: 1000px;
   }
 
   .form-inputs-container {
