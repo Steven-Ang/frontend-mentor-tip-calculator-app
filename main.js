@@ -4,7 +4,6 @@ const peopleInput = document.getElementById("people-input");
 const billErrorLabel = document.getElementById("bill-error-label");
 const peopleErrorLabel = document.getElementById("people-error-label");
 const tipErrorLabel = document.getElementById("tip-error-label");
-const tipsOptionsList = document.querySelector(".tips-options-list");
 const tipOptions = document.querySelectorAll(".radio-button");
 const customTipOption = document.getElementById("custom-tip-option");
 const resetButton = document.getElementById("reset-button");
@@ -27,150 +26,154 @@ const calculateTotalTipPersPerson = (bill, tip, people) => {
   return roundUp(newBill / people);
 };
 
-const appendCustomTip = (label, list, element, tipAmount) => {
-  removeError(label, element);
-
-  if (isInputEmpty(tipAmount)) {
-    const errorMessage = "Can't be zero";
-    addError(label, element, errorMessage);
-    return;
-  }
-
-  const tipLabel = document.createElement("label");
-  tipLabel.classList.add("tip-option");
-
-  tipLabel.innerHTML = `
-    ${tipAmount}%
-    <input
-      class="radio-button"
-      type="radio"
-      id="option-${list.children.length}"
-      name="tip"
-      value="${tipAmount}"
-    />
-  `;
-
-  list.insertBefore(tipLabel, element);
-  element.value = "";
-};
-
 const updateTipLabel = (id, value) => {
   const label = document.getElementById(id);
   label.innerText = `$${value}`;
 };
 
-const addError = (label, input, errorMessage) => {
-  input.classList.add("error");
+const addError = (label, errorMessage, input = null) => {
+  if (input) input.classList.add("error");
   label.classList.remove("hidden");
   label.innerText = errorMessage;
 };
 
-const removeError = (label, input) => {
-  input.classList.remove("error");
+const removeError = (label, input = null) => {
+  if (input) input.classList.remove("error");
   label.classList.add("hidden");
   label.innerText = "";
 };
 
-const enableResetButton = () => resetButton.removeAttribute("disabled");
-
-const disableResetButton = () => resetButton.setAttribute("disabled", true);
-
-const isInputEmpty = (value) => value === "" || value === "0";
+const isInputEmpty = (value) => !value || value === "" || value === "0";
 const isInputEndsWithDot = (value) => value.endsWith(".");
 
+const enableResetButton = (button) => button.removeAttribute("disabled");
+const disableResetButton = (button) => button.setAttribute("disabled", true);
+
 const requestSubmit = (event) => {
-  event.preventDefault();
   event.target.form.requestSubmit();
 };
 
-const handleReset = (event, submitForm) => {
-  event.preventDefault();
-
-  updateTipLabel("tip-amount-per-person", "0.00");
-  updateTipLabel("total-tip-per-person", "0.00");
-
-  disableResetButton();
-  submitForm.reset();
+const deselectOptions = (list) => {
+  [...list].forEach((option) => {
+    if (option.checked) option.checked = false;
+  });
 };
 
-const handleKeydown = (event, regex, callback = null, callbackOptions = {}) => {
+const handleKeydown = (event, regex) => {
   const value = event.target.value + event.key;
 
   if (event.key === "Enter" && event.target.value !== "") {
-    event.preventDefault();
-    if (callback === null) requestSubmit(event);
-    else if (callback) {
-      const { label, list, element } = callbackOptions;
-      callback(label, list, element, event.target.value);
-    }
+    requestSubmit(event);
   }
 
   if (event.key === "Backspace") return;
   if (!value.match(regex)) event.preventDefault();
 };
 
-const handleOnInput = (event, otherInput) => {
+const handleOnInput = (event, otherInput, button) => {
   const inputValue = event.target.value;
   const otherInputValue = otherInput.value;
 
   if (inputValue !== "" && otherInputValue === "") {
-    enableResetButton();
+    enableResetButton(button);
   } else if (inputValue === "" && otherInputValue === "") {
-    disableResetButton();
+    disableResetButton(button);
   }
+};
+
+const handleCustomTipOtionOnClick = (list) => {
+  deselectOptions(list);
+};
+
+const handleFormReset = (event) => {
+  event.preventDefault();
+
+  updateTipLabel("tip-amount-per-person", "0.00");
+  updateTipLabel("total-tip-per-person", "0.00");
+
+  removeError(billErrorLabel, billInput);
+  removeError(tipErrorLabel);
+  removeError(peopleErrorLabel, peopleInput);
+
+  disableResetButton();
+  form.reset();
 };
 
 const handleSubmit = (event) => {
   event.preventDefault();
 
-  enableResetButton();
+  enableResetButton(resetButton);
 
   const formData = Object.fromEntries(new FormData(event.target));
 
   const { bill, tip, people } = formData;
 
   const parsedBill = parseFloat(bill);
-  const parsedTip = parseInt(tip);
+  const parsedSelectedTip = parseInt(tip);
   const parsedPeople = parseInt(people);
+  const parsedCustomTip = parseInt(customTipOption.value);
 
   removeError(tipErrorLabel, customTipOption);
 
-  if (isInputEmpty(bill) || isInputEndsWithDot(bill) || isInputEmpty(people)) {
+  if (
+    isInputEmpty(bill) ||
+    isInputEndsWithDot(bill) ||
+    (isInputEmpty(parsedCustomTip) && isInputEmpty(tip)) ||
+    isInputEmpty(people)
+  ) {
     if (!isInputEmpty(bill) || !isInputEndsWithDot(bill))
       removeError(billErrorLabel, billInput);
     if (!isInputEmpty(people)) removeError(peopleErrorLabel, peopleInput);
 
     let billErrorMessage = "";
+    let tipErrorMessage = "";
     let peopleErrorMessage = "";
 
     if (isInputEmpty(bill)) {
       billErrorMessage = "Can't be zero";
-      addError(billErrorLabel, billInput, billErrorMessage);
+      addError(billErrorLabel, billErrorMessage, billInput);
     }
+
     if (isInputEndsWithDot(bill)) {
       billErrorMessage = "Can't end with .";
-      addError(billErrorLabel, billInput, billErrorMessage);
+      addError(billErrorLabel, billErrorMessage, billInput);
     }
+
+    if (isInputEmpty(parsedCustomTip) && isInputEmpty(tip)) {
+      tipErrorMessage = "Please select a tip";
+      addError(tipErrorLabel, tipErrorMessage);
+    }
+
     if (isInputEmpty(people)) {
       peopleErrorMessage = "Can't be zero";
-      addError(peopleErrorLabel, peopleInput, peopleErrorMessage);
+      addError(peopleErrorLabel, peopleErrorMessage, peopleInput);
     }
 
     return;
   }
 
   removeError(billErrorLabel, billInput);
+  removeError(tipErrorLabel);
   removeError(peopleErrorLabel, peopleInput);
+
+  const tipAmount = parsedSelectedTip || parsedCustomTip;
 
   updateTipLabel(
     "tip-amount-per-person",
-    calculateTipAmountPerPerson(parsedBill, parsedTip, parsedPeople)
+    calculateTipAmountPerPerson(parsedBill, tipAmount, parsedPeople)
   );
   updateTipLabel(
     "total-tip-per-person",
-    calculateTotalTipPersPerson(parsedBill, parsedTip, parsedPeople)
+    calculateTotalTipPersPerson(parsedBill, tipAmount, parsedPeople)
   );
 };
+
+for (const option of tipOptions) {
+  option.addEventListener("click", (event) => {
+    event.stopPropagation();
+    requestSubmit(event);
+  });
+}
 
 const billInputRegex = /^(0|[1-9]\d*)(\.\d{0,2})?$/;
 const peopleInputRegex = /^(0|[1-9]\d*)$/;
@@ -184,16 +187,15 @@ peopleInput.addEventListener("keydown", (event) =>
   handleKeydown(event, peopleInputRegex)
 );
 billInput.addEventListener("input", (event) =>
-  handleOnInput(event, peopleInput)
+  handleOnInput(event, peopleInput, resetButton)
 );
 peopleInput.addEventListener("input", (event) =>
-  handleOnInput(event, billInput)
+  handleOnInput(event, billInput, resetButton)
 );
 customTipOption.addEventListener("keydown", (event) =>
-  handleKeydown(event, customTipOptionRegex, appendCustomTip, {
-    label: tipErrorLabel,
-    list: tipsOptionsList,
-    element: customTipOption,
-  })
+  handleKeydown(event, customTipOptionRegex)
 );
-resetButton.addEventListener("click", (event) => handleReset(event, form));
+customTipOption.addEventListener("click", (event) =>
+  handleCustomTipOtionOnClick(event, tipOptions)
+);
+resetButton.addEventListener("click", handleFormReset);
