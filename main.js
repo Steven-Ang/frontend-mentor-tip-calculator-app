@@ -95,7 +95,7 @@ const handleFormReset = (event) => {
   removeError(tipErrorLabel);
   removeError(peopleErrorLabel, peopleInput);
 
-  disableResetButton();
+  disableResetButton(resetButton);
   form.reset();
 };
 
