@@ -28,19 +28,19 @@ const calculateTotalTipPersPerson = (bill, tip, people) => {
 
 const updateTipLabel = (id, value) => {
   const label = document.getElementById(id);
-  label.innerText = `$${value}`;
+  label.textContent = `$${value}`;
 };
 
 const addError = (label, errorMessage, input = null) => {
   if (input) input.classList.add("error");
   label.classList.remove("hidden");
-  label.innerText = errorMessage;
+  label.textContent = errorMessage;
 };
 
 const removeError = (label, input = null) => {
   if (input) input.classList.remove("error");
   label.classList.add("hidden");
-  label.innerText = "";
+  label.textContent = "";
 };
 
 const isInputEmpty = (value) => !value || value === "" || value === "0";
