@@ -195,7 +195,7 @@ peopleInput.addEventListener("input", (event) =>
 customTipOption.addEventListener("keydown", (event) =>
   handleKeydown(event, customTipOptionRegex)
 );
-customTipOption.addEventListener("click", (event) =>
-  handleCustomTipOtionOnClick(event, tipOptions)
+customTipOption.addEventListener("click", () =>
+  handleCustomTipOtionOnClick(tipOptions)
 );
 resetButton.addEventListener("click", handleFormReset);
