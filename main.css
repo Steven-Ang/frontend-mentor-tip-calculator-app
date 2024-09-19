@@ -246,6 +246,10 @@ input::-webkit-inner-spin-button {
     place-items: center;
   }
 
+  .container {
+    gap: 0.6rem;
+  }
+
   .title {
     margin: 0;
   }
